@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import DS4_KEYS from '../constants/ds4-keys';
+import { Component } from 'react';
+import { DS4_KEYS, DS4_AXIS } from '../constants/ds4-keys';
 
 const MS_PER_FRAME = 1000 / 60;
 
@@ -7,6 +7,7 @@ const toPressAction = (key) => `on${key}Pressed`;
 const toAxisHandler = (key) => `axis${key}`;
 const NOTHING = () => {};
 const NEVER = NOTHING;
+const MORE_THAN_3QUARTERS = (x) => Math.abs(x) >= 0.75;
 
 function forEach(pojo, fn) {
   for(const key in pojo) {
@@ -29,16 +30,19 @@ const isBlank = (x) => !(typeof x !== "undefined" && x !== null)
 function getAxisHandler(obj, hname) {
   const handler = obj[hname];
   if (typeof handler === 'function') {
-    return { threshold: MORE_THAN_HALF, do: handler };
+    return { threshold: MORE_THAN_3QUARTERS, do: handler };
   } else if (isBlank(handler)) {
     return { threshold: NEVER, do: NOTHING }
   } else {
-    return Object.assign({ threshold: MORE_THAN_HALF }, handler);
+    return Object.assign({ threshold: MORE_THAN_3QUARTERS }, handler);
   }
 }
 
 function pollGamepad(comp, gamepad) {
   return () => {
+    if (isBlank(gamepad)) {
+      return;
+    }
     forEach(DS4_KEYS, (gamepadKey, ds4Key) => {
       if (gamepad.button(gamepadKey)) {
         getFn(comp, toPressAction(ds4Key)).call(comp)
@@ -59,7 +63,7 @@ Desired usage
 
 <HTML5GamepadDS4 />
 
-HTML5Gamepad.propTypes = {
+HTML5GamepadDS4.propTypes = {
   pollDuration: number
   gamepad: gamepad
   onLeftPressed: fn
@@ -81,10 +85,12 @@ HTML5Gamepad.propTypes = {
   onPsPressed: fn
   onTouchpadPressed: fn
 
-  axisLeftPad: { threshold: fn, do: fn }
-  axisRightPad: { threshold: fn, do: fn }
-  axisLeftStick: { threshold: fn, do: fn }
-  axisRightStick: { threshold: fn, do: fn }
+  axisDPadX: { threshold: fn, do: fn }
+  axisDPadY: { threshold: fn, do: fn }
+  axisLeftStickX: { threshold: fn, do: fn }
+  axisLeftStickY: { threshold: fn, do: fn }
+  axisRightStickX: { threshold: fn, do: fn }
+  axisRightStickY: { threshold: fn, do: fn }
   axisLeftTrigger: { threshold: fn, do: fn }
   axisRightTrigger: { threshold: fn, do: fn }
 }
@@ -94,6 +100,7 @@ HTML5Gamepad.propTypes = {
 class HTML5GamepadDS4 extends Component {
   componentDidMount() {
     const { gamepad, pollDuration=MS_PER_FRAME } = this.props;
+    console.log(this.props);
     const interval = window.setInterval(pollGamepad(this, gamepad), pollDuration);
     this.setState({ interval });
   }
@@ -102,7 +109,7 @@ class HTML5GamepadDS4 extends Component {
     window.clearInterval(this.state.interval);
   }
   render() {
-    return this.props.children();
+    return null;
   }
 }
 
