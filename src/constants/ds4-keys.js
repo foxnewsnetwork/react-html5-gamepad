@@ -1,20 +1,33 @@
 const DS4_KEYS = {
-  B0: 'CROSS',
-  B1: 'CIRCLE',
-  B2: 'SQUARE',
-  B3: 'TRIANGLE',
-  B4: 'L1',
-  B5: 'R1',
-  B6: 'L2',
-  B7: 'R2',
-  B8: 'SHARE',
-  B9: 'OPTIONS',
-  B10: 'L3',
-  B11: 'R3',
-  B12: 'UP',
-  B13: 'DOWN',
-  B14: 'LEFT',
-  B15: 'RIGHT',
+  a: 'CROSS',
+  b: 'CIRCLE',
+  x: 'SQUARE',
+  y: 'TRIANGLE',
+  "left shoulder": 'L1',
+  "right shoulder": 'R1',
+  "left trigger": 'L2',
+  "right trigger": 'R2',
+  back: 'SHARE',
+  start: 'OPTIONS',
+  "left stick": 'L3',
+  "right stick": 'R3',
+  "dpad up": 'UP',
+  "dpad down": 'DOWN',
+  "dpad left": 'LEFT',
+  "dpad right": 'RIGHT',
   B16: 'PS',
-  B17: 'TOUCHPAD'
+  "home": 'TOUCHPAD'
+};
+
+const DS4_AXIS = {
+  "left stick down"
+  "left stick left"
+  "left stick right"
+  "left stick up"
+  "right stick down"
+  "right stick left"
+  "right stick right"
+  "right stick up"
 }
+
+export { DS4_KEYS, DS4_AXIS };
