@@ -2,15 +2,21 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import HTML5GamepadDS4 from './components/html5-gamepad-ds4';
-import gamepads from 'html5-gamepad';
+import GamepadInput from './services/gamepad-input';
+
+const mergeWith = (nextState) => (prevState) => Object.assign({}, prevState, nextState);
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { button: 'nothing' };
+    this.state = ({ button: 'nothing' });
+  }
+  componentDidMount() {
+    const gamepadInput = new GamepadInput(0);
+    gamepadInput.onConnect((gamepad) => this.setState(mergeWith({ gamepad })));
   }
   render() {
-    const gamepad = gamepads[0];
+    const { gamepad, button } = this.state;
 
     return (
       <div className="App">
@@ -22,14 +28,16 @@ class App extends Component {
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
         <div className="debug-output">
-          {this.state.button}
+          {button}
         </div>
-        <HTML5GamepadDS4
-          gamepad={gamepad}
-          onUpPressed={() => this.setState({ button: 'up' })}
-          onDownPressed={() => this.setState({ button: 'down' })}
-          onLeftPressed={() => this.setState({ button: 'left' })}
-          onRightPressed={() => this.setState({ button: 'right' })} />
+        {gamepad &&
+          <HTML5GamepadDS4
+            gamepad={gamepad}
+            onUpPressed={() => this.setState({ button: 'up' })}
+            onDownPressed={() => this.setState({ button: 'down' })}
+            onLeftPressed={() => this.setState({ button: 'left' })}
+            onRightPressed={() => this.setState({ button: 'right' })} />
+        }
       </div>
     );
   }

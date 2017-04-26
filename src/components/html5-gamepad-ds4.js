@@ -45,11 +45,12 @@ function pollGamepad(comp, gamepad) {
     }
     forEach(DS4_KEYS, (gamepadKey, ds4Key) => {
       if (gamepad.button(gamepadKey)) {
-        getFn(comp, toPressAction(ds4Key)).call(comp)
+        console.log(gamepadKey, ds4Key);
+        getFn(comp.props, toPressAction(ds4Key)).call(comp)
       }
     });
     forEach(DS4_AXIS, (axisKey, ds4Key) => {
-      const { threshold, do: handler } = getAxisHandler(comp, toAxisHandler(ds4Key));
+      const { threshold, do: handler } = getAxisHandler(comp.props, toAxisHandler(ds4Key));
       const x = gamepad.axis(axisKey);
       if (threshold(x)) {
         handler.call(comp, x);
@@ -100,8 +101,9 @@ HTML5GamepadDS4.propTypes = {
 class HTML5GamepadDS4 extends Component {
   componentDidMount() {
     const { gamepad, pollDuration=MS_PER_FRAME } = this.props;
-    console.log(this.props);
+    window.gamepad = gamepad;
     const interval = window.setInterval(pollGamepad(this, gamepad), pollDuration);
+
     this.setState({ interval });
   }
 
